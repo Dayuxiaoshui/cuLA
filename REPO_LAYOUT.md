@@ -14,7 +14,6 @@ cuLA/
 │   ├── ops/                      # CuTe DSL kernel implementations
 │   │   ├── chunk_delta_h.py      # Chunk delta-H kernel
 │   │   ├── fwd_o.py              # Forward output kernel
-│   │   ├── recompute_wu.py       # Recompute WU kernel
 │   │   ├── lightning_attn.py     # Lightning Attention prefill kernel
 │   │   ├── linear_attn.py        # Generic linear attention kernel
 │   │   ├── kda_fully_fused_wip.py # WIP fully fused KDA kernel
@@ -38,7 +37,9 @@ cuLA/
 │   │       ├── kda_fwd_sm100.cu
 │   │       ├── kda_fwd_common.cuh
 │   │       ├── kda_fwd_intra_kernel_sm100.hpp
-│   │       ├── kda_fwd_intra_mainloop_sm100.hpp
+│   │       ├── kda_fwd_intra_mainloop_sm100.hpp # Chunk intra mainloop
+│   │       ├── kda_fwd_recomp_w_u_kernel_sm100.hpp 
+│   │       ├── kda_fwd_recomp_w_u_mainloop_sm100.hpp # Recompute W&U mainloop
 │   │       ├── kda_config.hpp
 │   │       ├── fwd_helpers.hpp
 │   │       ├── sm100_umma_ext.hpp
@@ -54,7 +55,6 @@ cuLA/
 │   ├── bench_kda_chunk_intra.py  # KDA chunk intra benchmark
 │   ├── bench_chunk_delta_h.py    # Chunk delta-H benchmark
 │   ├── bench_fwd_o.py            # Forward output benchmark
-│   ├── bench_recompute_wu.py     # Recompute WU benchmark
 │   ├── bench_linear_attn.py      # Linear attention benchmark
 │   ├── generate_benchmark_md.py  # Auto-generate BENCHMARK_GB200.md (Blackwell)
 │   ├── generate_benchmark_hopper_md.py  # Auto-generate BENCHMARK_H200.md (Hopper)

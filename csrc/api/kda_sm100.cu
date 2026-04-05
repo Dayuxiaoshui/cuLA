@@ -74,7 +74,9 @@ ChunkKDAFwdRecompWU(
     at::Tensor w_out,
     at::Tensor u_out,
     at::Tensor kg_out,
-    int chunk_size) {
+    int chunk_size,
+    std::optional<at::Tensor> q,
+    std::optional<at::Tensor> qg_out) {
     KDA_fwd_recomp_w_u_params params;
     params.total_len = k.size(0) * k.size(1);
     params.b = cu_seqlens.size(0) - 1;
@@ -91,6 +93,13 @@ ChunkKDAFwdRecompWU(
     params.w_out_ptr = w_out.data_ptr();
     params.u_out_ptr = u_out.data_ptr();
     params.kg_out_ptr = kg_out.data_ptr();
+    const bool has_q = q.has_value();
+    const bool has_qg_out = qg_out.has_value();
+    TORCH_CHECK(
+        has_q == has_qg_out, "ChunkKDAFwdRecompWU: q and qg_out must either both be provided or both be omitted.");
+    params.store_qg = has_q && has_qg_out;
+    params.q_ptr = params.store_qg ? q->data_ptr() : nullptr;
+    params.qg_out_ptr = params.store_qg ? qg_out->data_ptr() : nullptr;
     params.shape_wukg = cute::make_shape(params.total_len, params.d, params.h);
     params.stride_wukg = cute::make_stride(params.d * params.h, cute::_1{}, params.d);
     int tile_num = chunk_indices.size(0);
